@@ -58,11 +58,11 @@ class Button():
 class Powerup():
     def __init__(self, order, image):
         self.image = image
-        self.size = self.image.get_size()
         self.order = order
 
     def clicking(self, surface, window_width, degree):
-        global handle, doubleB, powerdoubleB, autoB, critB, value
+        global handle, doubleB, powerdoubleB, autoB, critB, value, starB
+        global one, two, three, four
         if 0 < self.order < 3:
             pygame.transform.scale(self.image, (50, 50))
             self.rect = pygame.Rect(1300, 400 + 100*abs(self.order % 2 - 1), 50, 50)
@@ -72,10 +72,17 @@ class Powerup():
                             (1300 - (2.5 / 2), 400 + 100*abs(self.order % 2 - 1) - (2.5/ 2)))
                 if pygame.mouse.get_pressed()[0] == 1 and self.image == doubleP:
                     doubleB = True
+                    one = False
                     value = 2
                     print('clicked')
+                elif pygame.mouse.get_pressed()[0] == 1 and self.image == starP:
+                    starB = True
+                    one = False
+                    print('clicked')
+                    
                 if pygame.mouse.get_pressed()[0] == 1 and self.image == powerDoubleP:
                     powerdoubleB = True
+                    two = False
                     print('clicked')
 
             else:
@@ -93,9 +100,11 @@ class Powerup():
                             (1400 - (2.5 / 2), 400 + 100*abs(self.order % 2 - 1) - (2.5/ 2)))
                 if pygame.mouse.get_pressed()[0] == 1 and self.image == critP:
                     critB = True
+                    three = False
                     print('clicked')
                 if pygame.mouse.get_pressed()[0] == 1 and self.image == autoP:
                     autoB = True
+                    four = False
                     print('clicked')
 
             else:
@@ -114,8 +123,14 @@ doubleP = font.render(f'X2', True, (0, 0, 0), (255, 255, 255))
 powerDoubleP = font.render(f'^X2^', True, (0, 0, 0), (255, 255, 255))
 critP = font.render(f'CRIT', True, (0, 0, 0), (255, 255, 255))
 autoP = font.render(f'AUTO', True, (0, 0, 0), (255, 255, 255))
+starP = font.render(f'STAR', True, (0, 0, 0), (255, 255, 255))
 click = Button(200, clickimg)
 dopamine = Button(270, text)
+one = True
+two = True
+three = True
+four = True
+new = True
 
 double = Powerup(1, doubleP)
 doubleB = False
@@ -125,17 +140,35 @@ crit = Powerup(3, critP)
 critB = False
 auto = Powerup(4, autoP)
 autoB = False
+starB = False
+poweruplist = {'STAR': 5}
 #dvd = Powerup(random.randint(20, window_width), random.randint(20, window_height), dvdimg)
 value = 1
 run = True
 handled = False
 handle = False
+List = []
+for n in range(25):
+    List.append(random.randint(1, window_width))
+RectList = []
+for n in List:
+    RectList.append(pygame.Rect(0, n, 50, 50))
+print(RectList)
 
 while run:
     dopamine = Button(270, text)
-    
     window.fill(color='white')
-    
+    if one == False:
+        star = Powerup(1, starP)
+        if starB == False and counter > 9:
+            star.clicking(window, window_width, 1)
+    if two == False:
+        pass
+    if three == False:
+        pass
+    if four == False:
+        pass
+
     if click.draw(0.6, window, window_width, 1):
         counter += value
     dopamine.draw(0.6, window, window_width, 2)
@@ -145,14 +178,25 @@ while run:
         powerdouble.clicking(window, window_width, 1)
     if critB == False and counter > 100:
         crit.clicking(window, window_width, 1)
-    if autoB == False and counter > 50:
+    if autoB == False and counter > 49:
         auto.clicking(window, window_width, 1)
     elif autoB == True:
         counter += 1/60
+    if starB == True:
+        for i, n in enumerate(range(counter)):
+            pygame.draw.rect(window, (144, 144, 144), RectList[i])
+        if new:
+            RectList[counter].move_ip(-RectList[i].x, 0)
+            new = False
+        for i, n in enumerate(RectList):
+            n.move_ip(1, 0)
+            if n.x > window_width:
+                n.move_ip(-window, 0)
+        
     
     
     
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
