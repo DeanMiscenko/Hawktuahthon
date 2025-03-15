@@ -19,6 +19,7 @@ not_on_screen = True
 up = 2
 color2 = (0, 0, 255)
 List = []
+new = True
 for n in range(25):
     List.append(random.randint(1, Screen_width))
 RectList = []
@@ -37,6 +38,7 @@ while True:
             if main_button.collidepoint(pos):
                 points += 1 * value
             if powerup1.collidepoint(pos):
+                new = True
                 counter += 1
     if main_button.collidepoint(pos):
         Color = (0, 255, 0)
@@ -44,7 +46,10 @@ while True:
         Color = (255, 0, 0)
     if counter > 0:
         for i, n in enumerate(range(counter)):
-            pygame.draw.rect(Screen, (144, 144, 144), RectList[i])     
+            pygame.draw.rect(Screen, (144, 144, 144), RectList[i])
+        if new:
+            RectList[counter].move_ip(-RectList[i].x, 0)
+            new = False
         for i, n in enumerate(RectList):
             n.move_ip(1, 0)
             if n.x > Screen_width:
