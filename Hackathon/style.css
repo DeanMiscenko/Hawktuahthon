@@ -1,0 +1,69 @@
+body {
+    background-image: url("dopaminebg.jpg"); 
+    background-size: 100% 100%; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    height: 100vh; 
+}
+.content {
+    background-color: white;  
+    padding: 10px 20px;  
+    border-radius: 10px;  
+    width: 80%; 
+    max-width: 900px;
+    margin: 0px auto;  
+    font-size: 100%;
+}
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+}
+.logo {
+    max-width: 120px;
+    max-height: auto;
+
+}
+.navbar {
+    display: flex;
+    justify-content: center; 
+    gap: 20px; 
+    background-color: white; 
+    padding: 10px 10px; 
+    border-radius: 10px;
+    align-items: center;
+}
+.navbar a {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    padding: 8px 12px; 
+}
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto
+}
+.welcome {
+    text-align: center;
+    align-items: center;
+    font-size: 110%;
+    color: rgb(113, 54, 0)
+}
+.info {
+    background-color: rgb(92, 64, 51);
+    padding: 1px 15px; 
+    margin-left: auto;
+    border-radius: 10px;
+    margin-right: auto;
+    color: white;
+    scale: 100%;
+}
+.home {
+    color: rgb(92, 64, 51);
+}
+p {
+    font-size: 1.1em;
+}
