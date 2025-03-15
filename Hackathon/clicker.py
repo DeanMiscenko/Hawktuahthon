@@ -139,15 +139,15 @@ while run:
     if click.draw(0.6, window, window_width, 1):
         counter += value
     dopamine.draw(0.6, window, window_width, 2)
-    if doubleB == False:
+    if doubleB == False and counter > 4:
         double.clicking(window, window_width, 1)
-    if powerdoubleB == False:
+    if powerdoubleB == False and counter > 20:
         powerdouble.clicking(window, window_width, 1)
-    if critB == False:
+    if critB == False and counter > 100:
         crit.clicking(window, window_width, 1)
-    if autoB == False:
+    if autoB == False and counter > 50:
         auto.clicking(window, window_width, 1)
-    else:
+    elif autoB == True:
         counter += 1/60
     
     
