@@ -44,10 +44,7 @@ while True:
         Color = (255, 0, 0)
     if counter > 0:
         for i, n in enumerate(range(counter)):
-            pygame.draw.rect(Screen, (144, 144, 144), RectList[i])
-            if Counter_checker != counter:
-                pass #send all rectangles back to the start
-            
+            pygame.draw.rect(Screen, (144, 144, 144), RectList[i])     
         for i, n in enumerate(RectList):
             n.move_ip(1, 0)
             if n.x > Screen_width:
