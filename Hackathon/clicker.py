@@ -15,7 +15,8 @@ window_width,window_height = screen_width - 10,screen_height-50
 window = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
 pygame.display.set_caption(name)
 clickimg = pygame.image.load('click me.png')
-dvdimg = pygame.image.load('dvdimg.png')
+#dvdimg = pygame.image.load('dvdimg.png')
+starimg = pygame.transform.scale(pygame.image.load('shootingstar.png'), (50, 50))
 print(clickimg.get_size())
 
 class Button():
@@ -148,8 +149,8 @@ run = True
 handled = False
 handle = False
 List = []
-for n in range(25):
-    List.append(random.randint(1, window_width))
+for n in range(20):
+    List.append(random.randint(1, window_height))
 RectList = []
 for n in List:
     RectList.append(pygame.Rect(0, n, 50, 50))
@@ -183,15 +184,15 @@ while run:
     elif autoB == True:
         counter += 1/60
     if starB == True:
-        for i, n in enumerate(range(counter)):
-            pygame.draw.rect(window, (144, 144, 144), RectList[i])
+        for i, n in enumerate(range(5)):
+            window.blit(starimg, RectList[i])
         if new:
-            RectList[counter].move_ip(-RectList[i].x, 0)
+            RectList[5].move_ip(-RectList[i].x, 0)
             new = False
         for i, n in enumerate(RectList):
-            n.move_ip(1, 0)
+            n.move_ip(2, 0)
             if n.x > window_width:
-                n.move_ip(-window, 0)
+                n.move_ip(-window_width, 0)
         
     
     
