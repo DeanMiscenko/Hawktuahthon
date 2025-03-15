@@ -20,13 +20,11 @@ up = 2
 color2 = (0, 0, 255)
 List = []
 new = True
-for n in range(25):
+for n in range(100):
     List.append(random.randint(1, Screen_width))
 RectList = []
 for n in List:
     RectList.append(pygame.Rect(0, n, 50, 50))
-    
-
 while True:
     text = font.render(f"Dopamine points: {points}", True, (255, 255, 255))
     Screen.fill((0, 0, 0))
