@@ -1,90 +1,113 @@
 import pygame
-pygame.init()
 import random
-import math
-counter = 0
+
+pygame.init()
+
+# Constants
 Screen_width = 800
 Screen_height = 800
-points = 0
 button_width = 100
 button_height = 50
-main_button = pygame.Rect(Screen_width/2 - button_width/2, Screen_height/2, button_width, button_height)
-Screen = pygame.display.set_mode((Screen_width, Screen_height))
-value = 1
-Color = (255, 0 , 0)
-color3 = (0, 255, 0)
-font = pygame.font.Font(None, 40)
-text = font.render(f"Dopamine points: {points}", True, (255, 255, 255))
-text_rect = text.get_rect(center= (Screen_width/2, Screen_height/2 - 80))
-powerup1 = pygame.Rect(Screen_width/2 - 10, Screen_height/2 + 100, 30, 30)
-powerup2 = pygame.Rect(Screen_width/2 - 50, Screen_height/2 + 100, 30, 30)
-not_on_screen = True
-up = 2
-color2 = (0, 0, 255)
-List = []
-new = True
-new2 = True
+main_button = pygame.Rect(Screen_width / 2 - button_width / 2, Screen_height / 2, button_width, button_height)
+powerup1 = pygame.Rect(Screen_width / 2 - 10, Screen_height / 2 + 100, 30, 30)
+powerup2 = pygame.Rect(Screen_width / 2 - 50, Screen_height / 2 + 100, 30, 30)
+
+# Initialize game state
+points = 0
+counter = 0
 counter2 = 0
-for n in range(100):
-    List.append(random.randint(1, Screen_height))
+color_main_button = (255, 0, 0)
+color_powerup1 = (0, 255, 0)
+color_powerup2 = (0, 0, 255)
+font = pygame.font.Font(None, 40)
+text_rect = pygame.Rect(Screen_width / 2 - 100, Screen_height / 2 - 80, 200, 50)
+text = font.render(f"Dopamine points: {points}", True, (255, 255, 255))
+
+# Pygame setup
+Screen = pygame.display.set_mode((Screen_width, Screen_height))
+pygame.display.set_caption("Dopamine Game")
+clock = pygame.time.Clock()
+
+# Game objects
 RectList = []
-for n in List:
-    RectList.append(pygame.Rect(0, n, 50, 50))
-RectDict2 = {}
-for n in range(10):
-    RectDict2[frozenset((random.randint(0, 2), random.randint(0, 2)))] =  pygame.Rect(Screen_width/2, Screen_height/2, 20, 20)
 speed_x = 1
 speed_y = 10
-while True:
-    text = font.render(f"Dopamine points: {points}", True, (255, 255, 255))
+
+# Create RectList of moving objects
+for _ in range(100):
+    y_pos = random.randint(1, Screen_height)
+    RectList.append(pygame.Rect(0, y_pos, 50, 50))
+
+# List to store new bouncing squares created by powerup2 (blue button)
+bouncing_squares = []
+
+running = True
+while running:
     Screen.fill((0, 0, 0))
     pos = pygame.mouse.get_pos()
+
+    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
+            running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if main_button.collidepoint(pos):
-                points += 1 * value
+                points += 1
+                text = font.render(f"Dopamine points: {points}", True, (255, 255, 255))
             if powerup1.collidepoint(pos):
-                new = True
                 counter += 1
             if powerup2.collidepoint(pos):
-                new2 = True
                 counter2 += 1
+                # Create a new bouncing square at powerup2's position
+                new_bouncing_square = pygame.Rect(Screen_width / 2 - 50, Screen_height / 2 + 100, 30, 30)
+                # Assign a random speed and direction
+                bouncing_squares.append({'rect': new_bouncing_square, 'speed_x': random.choice([1, -1]), 'speed_y': random.choice([1, -1])})
+
+    # Change color of main button on hover
     if main_button.collidepoint(pos):
-        Color = (0, 255, 0)
+        color_main_button = (0, 255, 0)  # Green when hovered
     else:
-        Color = (255, 0, 0)
+        color_main_button = (255, 0, 0)  # Red when not hovered
+
+    # Draw RectList (moving squares)
+    for i, rect in enumerate(RectList[:counter]):
+        pygame.draw.rect(Screen, (144, 144, 144), rect)
+        rect.x += 1
+        if rect.x > Screen_width:
+            rect.x = -rect.width  # Reset to left side when it moves off-screen
+
+    # Powerup 1 squares (adding more squares)
     if counter > 0:
-        for i, n in enumerate(range(counter)):
-            pygame.draw.rect(Screen, (144, 144, 144), RectList[i])
-        if new:
-            RectList[counter].move_ip(-RectList[i].x, 0)
-            new = False
-        for i, n in enumerate(RectList):
-            n.move_ip(1, 0)
-            if n.x > Screen_width:
-                n.move_ip(-Screen_width, 0)
+        pygame.draw.rect(Screen, color_powerup1, powerup1)
+
+    # Powerup 2 squares (creating new bouncing rectangles)
     if counter2 > 0:
-        for n, i in enumerate(range(counter)):
-            pygame.draw.rect(Screen, (100, 100, 100), list(RectDict2.values())[i])
-        if new2:
-            RectList[counter2].x = Screen_width/2
-            RectList[counter2].y = Screen_height/2
-            new2 = False
-        for s, n in RectDict2.items():
-            if n.y > Screen_height or n.y < 0:
-                speed_y = speed_y * -1
-            if n.x > Screen_width or n.x < 0:
-                speed_x = speed_x * -1
-            n.move_ip(int(next(iter(s))) * speed_x, int(next(iter(s))) * speed_y)
-            
+        pygame.draw.rect(Screen, color_powerup2, powerup2)
 
+    # Move and display the bouncing squares
+    for bouncing_square in bouncing_squares:
+        # Update position of each bouncing square
+        bouncing_square['rect'].move_ip(bouncing_square['speed_x'], bouncing_square['speed_y'])
+        
+        # Bounce off the walls
+        if bouncing_square['rect'].x <= 0 or bouncing_square['rect'].x + bouncing_square['rect'].width >= Screen_width:
+            bouncing_square['speed_x'] *= -1  # Reverse X direction
+        if bouncing_square['rect'].y <= 0 or bouncing_square['rect'].y + bouncing_square['rect'].height >= Screen_height:
+            bouncing_square['speed_y'] *= -1  # Reverse Y direction
 
+        # Draw the bouncing square
+        pygame.draw.rect(Screen, (100, 100, 255), bouncing_square['rect'])
+
+    # Render the points text
     Screen.blit(text, text_rect)
-    pygame.draw.rect(Screen, Color, main_button)
-    pygame.draw.rect(Screen, color2, powerup1)
-    pygame.draw.rect(Screen, color3, powerup2)
-    pygame.display.update()
-    pygame.time.delay(5)
 
+    # Draw buttons
+    pygame.draw.rect(Screen, color_main_button, main_button)
+    pygame.draw.rect(Screen, color_powerup1, powerup1)
+    pygame.draw.rect(Screen, color_powerup2, powerup2)
+
+    # Update screen
+    pygame.display.update()
+    clock.tick(60)  # 60 frames per second
+
+pygame.quit()
