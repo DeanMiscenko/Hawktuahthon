@@ -90,17 +90,17 @@ while running:
         pygame.draw.rect(Screen, (100, 100, 255), bouncing_square['rect'])
     if Color_change:
         if colorcounter == 0:
-            Circle_color == (255, 0, 0)
+            Circle_color = (255, 0, 0)
             colorcounter += 1
-            pygame.time.wait(10)
+            pygame.time.get_ticks()
         if colorcounter == 1:
-            Circle_color == (0, 255, 0)
+            Circle_color = (0, 255, 0)
             colorcounter += 1
-            pygame.time.wait(10)
+            pygame.time.get_ticks()
         if colorcounter == 2:
-            Circle_color == (0, 0, 255)
-            colorcounter == 0
-            pygame.time.wait(10)
+            Circle_color = (0, 0, 255)
+            colorcounter = 0
+            pygame.get_ticks()
         
     Screen.blit(text, text_rect)
     pygame.draw.rect(Screen, color_main_button, main_button)
