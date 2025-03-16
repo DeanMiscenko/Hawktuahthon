@@ -100,7 +100,7 @@ while running:
         if colorcounter == 2:
             Circle_color = (0, 0, 255)
             colorcounter = 0
-            pygame.get_ticks()
+            pygame.time.get_ticks()
         
     Screen.blit(text, text_rect)
     pygame.draw.rect(Screen, color_main_button, main_button)
