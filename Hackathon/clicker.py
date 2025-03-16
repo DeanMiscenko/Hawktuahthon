@@ -1,4 +1,5 @@
 
+
 import pygame, os, time, random
 import cv2 # type: ignore
 import numpy as np #type: ignore
@@ -15,6 +16,8 @@ width1 = int(cap1.get(cv2.CAP_PROP_FRAME_WIDTH)) / 2
 height1 = int(cap1.get(cv2.CAP_PROP_FRAME_HEIGHT)) / 2
 button_width = 100
 button_height = 50
+colorcounter = 0
+Circle_color = (255, 255, 255)
 
 #Import End
 
@@ -168,6 +171,7 @@ critP = font.render(f'CRIT', True, (0, 0, 0), (255, 255, 255))
 autoP = font.render(f'AUTO', True, (0, 0, 0), (255, 255, 255))
 starP = font.render(f'STAR', True, (0, 0, 0), (255, 255, 255))
 dvdP = font.render(f'DVD', True, (0, 0, 0), (255, 255, 255))
+colorP = font.render(f'COLOR', True, (0, 0, 0), (255, 255, 255))
 click = Button(200, clickimg)
 dopamine = Button(270, text)
 one = True
@@ -176,6 +180,8 @@ three = True
 four = True
 new = True
 
+color = Powerup(5, colorP)
+colorB = False
 double = Powerup(1, doubleP)
 doubleB = False
 subwaySurfers = Powerup(2, subwaySurfersP)
@@ -191,6 +197,7 @@ handled = False
 handle = False
 dvdB = False
 things = True
+Color_change = False
 List = []
 for n in range(20):
     List.append(random.randint(1, window_height))
@@ -235,6 +242,9 @@ while run:
         crit.clicking(window, window_width, 1)
     if autoB == False and counter > 99:
         auto.clicking(window, window_width, 1)
+    if colorB == False and counter > 499:
+        color.clicking(window, window_width, 1)
+        Color_change = True
     elif autoB == True:
         counter += 1/60
     if starB == True:
@@ -266,8 +276,20 @@ while run:
         # Draw the bouncing square
         window.blit(dvdimg, bouncing_square['rect'])
 
-    
-    
+    if Color_change == True:
+        if colorcounter == 0: #THis cahnges the color
+            Circle_color = (255, 0, 0)
+            colorcounter += 1
+            pygame.time.get_ticks()
+        elif colorcounter == 1:
+            Circle_color = (0, 255, 0)
+            colorcounter += 1
+            pygame.time.get_ticks()
+        elif colorcounter == 2:
+            Circle_color = (0, 0, 255)
+            colorcounter = 0
+            pygame.time.get_ticks()
+    pygame.draw.circle(window, Circle_color, (pos), 20 )
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
