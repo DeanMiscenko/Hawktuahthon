@@ -17,7 +17,7 @@ height1 = int(cap1.get(cv2.CAP_PROP_FRAME_HEIGHT)) / 2
 button_width = 100
 button_height = 50
 colorcounter = 0
-Circle_color = (255, 255, 255)
+Circle_color = (0, 0, 0)
 
 #Import End
 
@@ -210,6 +210,7 @@ while run:
     pos = pygame.mouse.get_pos()
     dopamine = Button(270, text)
     window.fill(color='white')
+    pygame.mouse.set_visible(False)
     if one == False:
         star = Powerup(1, starP)
         if starB == False and counter > 175:
