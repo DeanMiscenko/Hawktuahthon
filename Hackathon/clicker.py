@@ -1,3 +1,4 @@
+
 import pygame, os, time, random
 import cv2 # type: ignore
 import numpy as np #type: ignore
@@ -99,7 +100,7 @@ class Powerup():
         self.order = order
 
     def clicking(self, surface, window_width, degree):
-        global handle, doubleB, powerdoubleB, autoB, critB, value, starB, dvdB
+        global handle, doubleB, subwaySurfersB, autoB, critB, value, starB, dvdB
         global one, two, three, four
         if 0 < self.order < 3:
             pygame.transform.scale(self.image, (50, 50))
@@ -118,8 +119,8 @@ class Powerup():
                     one = False
                     print('clicked')
                     
-                if pygame.mouse.get_pressed()[0] == 1 and self.image == powerDoubleP:
-                    powerdoubleB = True
+                if pygame.mouse.get_pressed()[0] == 1 and self.image == subwaySurfersP:
+                    subwaySurfersB = True
                     two = False
                     print('clicked')
 
@@ -162,7 +163,7 @@ font = pygame.font.SysFont('arial', 32)
 counter = 0
 text = font.render(f'Dopamine Points {counter}', True, (0, 0, 0), (255, 255, 255))
 doubleP = font.render(f'X2', True, (0, 0, 0), (255, 255, 255))
-powerDoubleP = font.render(f'^X2^', True, (0, 0, 0), (255, 255, 255))
+subwaySurfersP = font.render(f'Subway surfers', True, (0, 0, 0), (255, 255, 255))
 critP = font.render(f'CRIT', True, (0, 0, 0), (255, 255, 255))
 autoP = font.render(f'AUTO', True, (0, 0, 0), (255, 255, 255))
 starP = font.render(f'STAR', True, (0, 0, 0), (255, 255, 255))
@@ -177,8 +178,8 @@ new = True
 
 double = Powerup(1, doubleP)
 doubleB = False
-powerdouble = Powerup(2, powerDoubleP)
-powerdoubleB = False
+subwaySurfers = Powerup(2, subwaySurfersP)
+subwaySurfersB = False
 crit = Powerup(3, critP)
 critB = False
 auto = Powerup(4, autoP)
@@ -228,8 +229,8 @@ while run:
     dopamine.draw(0.6, window, window_width, 2)
     if doubleB == False and counter > 24:
         double.clicking(window, window_width, 1)
-    if powerdoubleB == False and counter > 20:
-        powerdouble.clicking(window, window_width, 1)
+    if subwaySurfersB == False and counter > 249:
+        subwaySurfers.clicking(window, window_width, 1)
     if critB == False and counter > 150:
         crit.clicking(window, window_width, 1)
     if autoB == False and counter > 99:
@@ -277,7 +278,7 @@ while run:
     if not ret:
         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
         ret, frame = cap.read()
-    if counter > 250:
+    if counter > 250 and subwaySurfersB == True:
         counter += 1/15
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_surface = pygame.surfarray.make_surface(np.rot90(frame))
