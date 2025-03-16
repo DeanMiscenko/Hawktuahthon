@@ -1,9 +1,18 @@
 import pygame, os, time, random
+import cv2 # type: ignore
+import numpy as np #type: ignore
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
 info = pygame.display.Info()
+video_path = "videoplayback.mp4"
+cap = cv2.VideoCapture(video_path)
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) / 2
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) / 2
+video_path1 = "Roulette Wheel Spinning.mp4"
+cap1 = cv2.VideoCapture(video_path1)
+width1 = int(cap1.get(cv2.CAP_PROP_FRAME_WIDTH)) / 2
+height1 = int(cap1.get(cv2.CAP_PROP_FRAME_HEIGHT)) / 2
 #Import End
-
 
 
 #Screen Declaration
@@ -161,7 +170,7 @@ while run:
     window.fill(color='white')
     if one == False:
         star = Powerup(1, starP)
-        if starB == False and counter > 9:
+        if starB == False and counter > 175:
             star.clicking(window, window_width, 1)
     if two == False:
         pass
@@ -171,19 +180,28 @@ while run:
         pass
 
     if click.draw(0.6, window, window_width, 1):
-        counter += value
+        if critB == True:
+            xy = random.randint(1, 20)
+            print(xy)
+            if xy == 1:
+                counter += 5*value
+            else:
+                counter += value
+        else:
+            counter += value
     dopamine.draw(0.6, window, window_width, 2)
-    if doubleB == False and counter > 4:
+    if doubleB == False and counter > 24:
         double.clicking(window, window_width, 1)
     if powerdoubleB == False and counter > 20:
         powerdouble.clicking(window, window_width, 1)
-    if critB == False and counter > 100:
+    if critB == False and counter > 150:
         crit.clicking(window, window_width, 1)
-    if autoB == False and counter > 49:
+    if autoB == False and counter > 99:
         auto.clicking(window, window_width, 1)
     elif autoB == True:
         counter += 1/60
     if starB == True:
+        counter += 1/20
         for i, n in enumerate(range(5)):
             window.blit(starimg, RectList[i])
         if new:
@@ -201,9 +219,29 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+    ret, frame = cap.read()
+    if not ret:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        ret, frame = cap.read()
+    if counter > 250:
+        counter += 1/15
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame_surface = pygame.surfarray.make_surface(np.rot90(frame))
+        window.blit(pygame.transform.scale(frame_surface, (width, height)), (0, 0))
+    ret1, frame1 = cap1.read()
+    if not ret1:
+        cap1.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        ret1, frame1 = cap1.read()
+    if counter > 1000:
+        counter += 1/15
+        frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+        frame_surface1 = pygame.surfarray.make_surface(np.rot90(frame1))
+        window.blit(pygame.transform.scale(frame_surface1, (width1, height1)), (0, window_height - height1))
+    
+    
     text = font.render(f'Dopamine Points {int(counter)}', True, (0, 0, 0), (255, 255, 255))
     pygame.display.update()
     clock.tick(60)
     
-    
+cap.release()
 pygame.quit()  
