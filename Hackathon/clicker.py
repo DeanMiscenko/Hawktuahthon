@@ -28,6 +28,27 @@ clickimg = pygame.image.load('click me.png')
 starimg = pygame.transform.scale(pygame.image.load('shootingstar.png'), (50, 50))
 print(clickimg.get_size())
 
+def get_random_velocity():
+    direction = random.choice(['top_left', 'top_right', 'bottom_left', 'bottom_right'])  # Random corner direction
+    speed = random.uniform(2, 5)  # Random speed between 2 and 5
+
+    if direction == 'top_left':
+        speed_x = -speed
+        speed_y = -speed
+    elif direction == 'top_right':
+        speed_x = speed
+        speed_y = -speed
+    elif direction == 'bottom_left':
+        speed_x = -speed
+        speed_y = speed
+    elif direction == 'bottom_right':
+        speed_x = speed
+        speed_y = speed
+
+    return speed_x, speed_y
+
+running = True
+
 class Button():
     def __init__(self, y, image):
         self.image = image
