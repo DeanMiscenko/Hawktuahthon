@@ -12,6 +12,9 @@ video_path1 = "Roulette Wheel Spinning.mp4"
 cap1 = cv2.VideoCapture(video_path1)
 width1 = int(cap1.get(cv2.CAP_PROP_FRAME_WIDTH)) / 2
 height1 = int(cap1.get(cv2.CAP_PROP_FRAME_HEIGHT)) / 2
+button_width = 100
+button_height = 50
+
 #Import End
 
 
@@ -24,9 +27,34 @@ window_width,window_height = screen_width - 10,screen_height-50
 window = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
 pygame.display.set_caption(name)
 clickimg = pygame.image.load('click me.png')
-#dvdimg = pygame.image.load('dvdimg.png')
 starimg = pygame.transform.scale(pygame.image.load('shootingstar.png'), (50, 50))
+dvdimg = pygame.transform.scale(pygame.image.load('dvdimg.png'), (100, 100))
+powerup2 = pygame.Rect(window_width / 2 - 50, window_height / 2, 100, 100)  # Position of the blue button
+# Initialize game state
+bouncing_squares = []  # List to store bouncing squares
+font = pygame.font.Font(None, 40)
+color_powerup2 = (0, 0, 255)  # Color for the blue button
 print(clickimg.get_size())
+
+def get_random_velocity():
+    direction = random.choice(['top_left', 'top_right', 'bottom_left', 'bottom_right'])  # Random corner direction
+    speed = random.uniform(2, 5)  # Random speed between 2 and 5
+
+    if direction == 'top_left':
+        speed_x = -speed
+        speed_y = -speed
+    elif direction == 'top_right':
+        speed_x = speed
+        speed_y = -speed
+    elif direction == 'bottom_left':
+        speed_x = -speed
+        speed_y = speed
+    elif direction == 'bottom_right':
+        speed_x = speed
+        speed_y = speed
+
+    return speed_x, speed_y
+
 
 class Button():
     def __init__(self, y, image):
@@ -71,7 +99,7 @@ class Powerup():
         self.order = order
 
     def clicking(self, surface, window_width, degree):
-        global handle, doubleB, powerdoubleB, autoB, critB, value, starB
+        global handle, doubleB, powerdoubleB, autoB, critB, value, starB, dvdB
         global one, two, three, four
         if 0 < self.order < 3:
             pygame.transform.scale(self.image, (50, 50))
@@ -112,6 +140,10 @@ class Powerup():
                     critB = True
                     three = False
                     print('clicked')
+                elif pygame.mouse.get_pressed()[0] == 1 and self.image == dvdP:
+                    dvdB = True
+                    three = False
+                    print('clicked')
                 if pygame.mouse.get_pressed()[0] == 1 and self.image == autoP:
                     autoB = True
                     four = False
@@ -134,6 +166,7 @@ powerDoubleP = font.render(f'^X2^', True, (0, 0, 0), (255, 255, 255))
 critP = font.render(f'CRIT', True, (0, 0, 0), (255, 255, 255))
 autoP = font.render(f'AUTO', True, (0, 0, 0), (255, 255, 255))
 starP = font.render(f'STAR', True, (0, 0, 0), (255, 255, 255))
+dvdP = font.render(f'DVD', True, (0, 0, 0), (255, 255, 255))
 click = Button(200, clickimg)
 dopamine = Button(270, text)
 one = True
@@ -151,12 +184,12 @@ critB = False
 auto = Powerup(4, autoP)
 autoB = False
 starB = False
-poweruplist = {'STAR': 5}
-#dvd = Powerup(random.randint(20, window_width), random.randint(20, window_height), dvdimg)
 value = 1
 run = True
 handled = False
 handle = False
+dvdB = False
+things = True
 List = []
 for n in range(20):
     List.append(random.randint(1, window_height))
@@ -166,6 +199,7 @@ for n in List:
 print(RectList)
 
 while run:
+    pos = pygame.mouse.get_pos()
     dopamine = Button(270, text)
     window.fill(color='white')
     if one == False:
@@ -175,7 +209,9 @@ while run:
     if two == False:
         pass
     if three == False:
-        pass
+        dvd = Powerup(3, dvdP)
+        if dvdB == False and counter > 300:
+            dvd.clicking(window, window_width, 1)
     if four == False:
         pass
 
@@ -211,15 +247,33 @@ while run:
             n.move_ip(2, 0)
             if n.x > window_width:
                 n.move_ip(-window_width, 0)
-        
-    
+    if dvdB == True and things == True:
+        new_bouncing_square = pygame.Rect(window_width / 2 - 50, window_height / 2, 100, 100)
+        speed_x, speed_y = get_random_velocity()
+        bouncing_squares.append({'rect': new_bouncing_square, 'speed_x': speed_x, 'speed_y': speed_y})
+        window.blit(dvdimg, powerup2)
+        things = False
+    for bouncing_square in bouncing_squares:
+        # Update position of each bouncing square
+        bouncing_square['rect'].move_ip(bouncing_square['speed_x'], bouncing_square['speed_y'])
+        # Bounce off the walls
+        if bouncing_square['rect'].x <= 0 or bouncing_square['rect'].x + bouncing_square['rect'].width >= window_width:
+            bouncing_square['speed_x'] *= -1  # Reverse X direction
+        if bouncing_square['rect'].y <= 0 or bouncing_square['rect'].y + bouncing_square['rect'].height >= window_height:
+            bouncing_square['speed_y'] *= -1  # Reverse Y direction
+
+        # Draw the bouncing square
+        window.blit(dvdimg, bouncing_square['rect'])
+
     
     
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
     ret, frame = cap.read()
+
     if not ret:
         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
         ret, frame = cap.read()
